@@ -81,7 +81,12 @@ headline result) is bundled in this repository:
   leakage).
 - **`data/annotations/`** — the full expert-annotation dataset (6,960 pairs,
   train/val split) used to train M2 and M4. See its README for inter-annotator
-  agreement methodology.
+  agreement methodology. The referenced images (both the annotation pairs and
+  the 5,494-cell analysis set used for M3/M4 embedding extraction) are
+  produced by the companion
+  [`africa_morphology_imagery`](https://github.com/Sean-creater/africa_morphology_imagery)
+  repository's rendering stage (`png_integrated`, the satellite +
+  black-building/dark-gray-road overlay style).
 - **`data/reference/`** — the 535-pair / 546-triplet evaluation set and the
   final ranking table.
 - **`data/example/`** — a small bundled/illustrative image subset (see its

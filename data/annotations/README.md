@@ -16,9 +16,18 @@ Image_A_gridID, Image_B_gridID, Image_A, Image_B, Rating
 ```
 
 - `Image_A_gridID`, `Image_B_gridID`: Grid cell identifiers (e.g. `EGY_0110_060235`)
-- `Image_A`, `Image_B`: Image filenames. In the original study these were found in
-  `data/images/annotation_set/` (714 images, 707 unique grid cells); this repo
-  bundles only a small illustrative sample under `data/example/` (see its README).
+- `Image_A`, `Image_B`: Image filenames, referring to the satellite +
+  black-building/dark-gray-road overlay render (`png_integrated` in the
+  companion [`africa_morphology_imagery`](https://github.com/Sean-creater/africa_morphology_imagery)
+  repository, which produces this dataset's images) — the same render style
+  used as model input for M3/M4. `africa_morphology_imagery` also produces a
+  separate high-contrast cyan/magenta variant intended for annotation
+  legibility, but the annotation set actually collected and used for this
+  study's human judgments uses the black scheme (confirmed by pixel
+  inspection of the source images: no cyan or magenta pixels present). In
+  the original study these were collected under `data/images/annotation_set/`
+  (714 images, 707 unique grid cells); this repo bundles only a small
+  illustrative sample under `data/example/` (see its README).
 - `Rating`: Mean expert similarity score (1.0–5.0, step 0.5)
   - 1.0 = completely dissimilar morphologies
   - 5.0 = very similar morphologies
