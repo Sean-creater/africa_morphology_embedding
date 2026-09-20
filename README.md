@@ -28,8 +28,8 @@ PyTorch with CUDA is required for the image-based stages.
 
 ## Data requirements
 
-Everything needed to reproduce the headline result is bundled in this
-repository: morphology feature CSVs (`data/features/`), the
+Everything needed to reproduce the ablation ranking table is bundled in
+this repository: morphology feature CSVs (`data/features/`), the
 expert-annotation dataset (`data/annotations/`), the evaluation set and
 ranking table (`data/reference/`), a small illustrative image subset
 (`data/example/`), the trained checkpoints and embeddings, and a vendored,
@@ -56,8 +56,8 @@ collaborators.
 
 ## Ablation
 
-Six approaches to producing the embedding (`methods/m1`–`m6`) were
-evaluated against the same held-out expert pairwise-similarity judgments:
+Six approaches to producing the embedding (`methods/`) were evaluated
+against the same held-out expert pairwise-similarity judgments:
 PCA on raw indicators, a supervised MLP on indicators, a frozen vision
 backbone, a fine-tuned vision backbone (the teacher stage above), and two
 distillation variants including the teacher-student design used
