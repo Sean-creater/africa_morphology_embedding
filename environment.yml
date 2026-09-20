@@ -1,4 +1,4 @@
-name: morphology_embedding_comparison
+name: africa_morphology_embedding
 channels:
   - pytorch
   - nvidia

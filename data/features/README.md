@@ -1,6 +1,7 @@
 # Morphological Features
 
-Tabular input features for M1, M2, M5, and M6.
+Tabular input features for the student model and the indicator-based
+design-validation alternatives.
 
 | File | Description |
 |------|-------------|

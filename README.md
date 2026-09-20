@@ -1,194 +1,142 @@
-# Morphology Embedding Comparison
+# Africa Morphology Embedding
 
-A methodological comparison of six approaches to embedding African urban
-morphology — from 250m hex-grid cells — into a compact space that captures
-perceptual similarity between neighborhoods, validated against expert
-pairwise-similarity judgments.
+Produces a compact, continent-scale embedding of African urban morphology,
+capturing perceptual similarity between neighborhoods, for downstream use
+in constructing a data-driven typology of African urban form.
 
-## What this compares
+## Motivation
 
-Six methods each produce an embedding meant to place morphologically
-similar grid cells near each other, spanning a spectrum from unsupervised
-linear projection to a vision-transformer embedding distilled into a
-tabular-features-only student:
+Two common approaches to representing urban morphology each have
+limitations. Indicator-based approaches (morphology metrics computed
+directly from building footprints and street networks) are interpretable
+and lightweight, but have limited representational capacity and are often
+built around indicators derived from non-African urban contexts. Visual
+embedding approaches (learned directly from imagery) have strong
+representational power and can incorporate visual priors and expert
+judgment, but are difficult to interpret and computationally expensive at
+continental scale.
 
-| | Input | Learned? | Supervised by humans? |
-|---|---|---|---|
-| **M1** raw_features | tabular morphology | No | No |
-| **M2** supervised_morphological | tabular morphology | Yes (MLP) | Yes |
-| **M3** frozen_vit | image | No (frozen backbone) | No |
-| **M4** finetuned_vit | image | Yes (projection head) | Yes |
-| **M5** selfsup_distillation | tabular morphology | Yes (distilled) | No (distills M3) |
-| **M6** triplet_distillation | tabular morphology | Yes (distilled) | Indirectly (distills M4) |
+This repository combines both: a large vision model, guided by expert
+similarity judgments, learns a strong embedding space from urban imagery;
+a lightweight model then reproduces that embedding space from
+interpretable morphology indicators alone. The result keeps the
+representational strength and expert grounding of the image-based
+approach, while remaining interpretable and cheap enough to run across
+every urban grid cell on the continent. The resulting embeddings exhibit
+clear clustering structure and are used downstream to construct an urban
+form typology (a separate, companion analysis).
 
-All six are evaluated against the same held-out expert pairwise-similarity
-ratings (see [Evaluation methodology](#evaluation-methodology)). M6 wins on
-all three evaluation metrics (see [Results](#results)).
+## Approach
 
-The question this addresses: for embedding urban morphology at continental
-scale, where satellite imagery is not available or practical for every
-cell, how much is gained from deep learning over raw tabular features, from
-images over tabular features, and from distilling a human-supervised image
-model into a tabular-only student? M6 shows the distillation route matches
-— and in this case exceeds — its teacher's performance while requiring only
-tabular features at inference, making it the only method of the six
-deployable across the full African grid-cell dataset.
+Urban imagery, guided by expert similarity judgments, trains an embedding
+space (the "teacher" stage) that captures how African urban forms differ
+from one another. A lightweight model then learns to reproduce that
+embedding space from morphology indicators alone (the "student" stage),
+so the final embedding requires no imagery at inference and can be
+computed for every grid cell on the continent.
+
+To validate this design, six alternative ways of producing the embedding
+were compared against the same held-out expert similarity judgments — see
+[Design validation](#design-validation). The teacher-student approach
+described above performed best on every evaluation metric and is the one
+used to produce the published embeddings.
 
 ## Installation
 
 ```bash
 conda env create -f environment.yml
-conda activate morphology_embedding_comparison
+conda activate africa_morphology_embedding
 # or: pip install -r requirements.txt
 ```
 
-PyTorch with CUDA is required for the DINOv3-based methods (M3, M4).
+PyTorch with CUDA is required for the image-based stages.
 
 ## Data requirements
 
-Everything needed to reproduce `data/reference/final_ranking.csv` is
-bundled in this repository: morphology feature CSVs (`data/features/`),
-the expert-annotation dataset (`data/annotations/`), the evaluation set and
-final ranking table (`data/reference/`), a small illustrative image subset
-(`data/example/`), the trained checkpoints and embeddings for all six
-methods (`outputs/`), and a vendored, pruned copy of DINOv3
-(`backbone/dinov3/`; pretrained weights are not bundled — see
-`DATA_PATHS.md` for how to obtain them).
+Everything needed to reproduce the headline result is bundled in this
+repository: morphology feature CSVs (`data/features/`), the
+expert-annotation dataset (`data/annotations/`), the evaluation set and
+ranking table (`data/reference/`), a small illustrative image subset
+(`data/example/`), the trained checkpoints and embeddings, and a vendored,
+pruned copy of the vision backbone (`backbone/dinov3/`; pretrained weights
+are not bundled — see `DATA_PATHS.md`).
 
 Images are produced by the companion
 [`africa_morphology_imagery`](https://github.com/Sean-creater/africa_morphology_imagery)
-repository. The full-Africa morphological indicator table used to apply M6
-beyond this comparison's evaluation set is produced by the companion
+repository. The full-Africa morphological indicator table used to apply
+the trained model beyond this repository's evaluation set is produced by
+the companion
 [`africa_morphology_metrics`](https://github.com/Sean-creater/africa_morphology_metrics)
 repository and is not bundled here; see `DATA_PATHS.md`.
 
 ### Full-Africa outputs
 
-`extract_full_africa.py`'s output — the morphological indicator table and
-M6 embeddings for all African grid cells — is published as release assets:
-[**Continent-scale morphology and embedding data**](https://github.com/Sean-creater/morphology_embedding_comparison/releases/tag/africa-full-outputs-v1).
+The morphological indicator table and embeddings for all African grid
+cells are published as release assets:
+[**Continent-scale morphology and embedding data**](https://github.com/Sean-creater/africa_morphology_embedding/releases/tag/africa-full-outputs-v1).
 Both files join on `GridID`, consistent with the companion repositories.
 See the manuscript's Methods and Supplementary Information for construction
 and validation details. The release is private, visible only to repository
 collaborators.
 
-## Methods
+## Design validation
 
-- **M1 — raw_features**: PCA on the tabular morphology feature vector. No
-  learning, no supervision. The sanity-check floor.
-- **M2 — supervised_morphological**: an MLP trained directly on tabular
-  features with a triplet similarity loss derived from the annotation
-  data. Isolates how much of M4's performance comes from image content
-  versus the training procedure itself.
-- **M3 — frozen_vit**: the frozen DINOv3 backbone run directly on composite
-  images, with no fine-tuning or supervision. Measures how much
-  perceptually relevant structure a generic vision model already captures.
-- **M4 — finetuned_vit**: the frozen DINOv3 backbone plus a trainable
-  projection head, trained with the same triplet objective as M2 but over
-  images. This is the "teacher" model M6 distills from.
-- **M5 — selfsup_distillation**: an MLP distilling M3's frozen embedding
-  space into tabular features — self-supervised, since M3's teacher
-  embeddings require no human annotation.
-- **M6 — triplet_distillation (the winner)**: an MLP distilling M4's
-  triplet-trained embedding space into tabular features, using a
-  relational (pairwise-similarity-matching) objective rather than
-  per-sample matching. Because it needs only tabular features at
-  inference, it is the only method of the six applied to the full
-  production dataset.
-- **M7 / M8** (not part of the published comparison): two additional
-  distillation variants were explored and did not outperform M6.
+Six approaches to producing the embedding were compared, spanning a
+spectrum from unsupervised linear projection to the teacher-student
+approach used in this repository: no learning at all, direct supervised
+learning on morphology indicators, a frozen or fine-tuned vision model on
+imagery, and two knowledge-distillation variants (including the one used
+throughout this repository). All six were evaluated against the same
+held-out expert pairwise-similarity judgments.
 
-See the manuscript's Methods and Supplementary Information for full
-architecture, training, and loss-function details for each method.
-
-## Results
-
-From `data/reference/final_ranking.csv`, evaluated against a held-out set
-of expert-annotated pairs and derived triplets (see
-[Evaluation methodology](#evaluation-methodology)):
-
-| Method | PRA (%) | Spearman ρ | Triplet Acc (%) |
-|---|---|---|---|
-| M1_PCA | 68.58 | 0.4954 | 78.75 |
-| M3_FrozenViT | 73.07 | 0.6099 | 77.66 |
-| M5_SelfSupDistill | 68.17 | 0.4979 | 78.21 |
-| M2_Triplet | 72.75 | 0.6003 | 80.40 |
-| M4_Triplet | 75.48 | 0.6657 | 82.05 |
-| **M6_Triplet** | **77.73** | **0.7173** | **82.42** |
-
-M6 wins on all three metrics despite using only tabular features at
-inference, outperforming its own teacher (M4), the frozen vision backbone
-(M3), and both morphology-only alternatives (M1, M5). See the manuscript
-for full discussion.
-
-## Evaluation methodology
-
-Three metrics, computed against a held-out, high-consensus expert-annotated
-evaluation set distinct from the training annotation data:
-
-- **Pairwise Ranking Accuracy (PRA)**: agreement between embedding
-  similarity ordering and human rating ordering, across all comparable
-  pairs of annotated pairs.
-- **Spearman ρ**: rank correlation between embedding similarity and mean
-  human rating.
-- **Triplet Accuracy**: fraction of evaluation triplets where the
-  embedding correctly ranks the human-preferred neighbor closer.
-
-See the manuscript's Methods and Supplementary Information for the exact
-evaluation-set construction and inter-annotator agreement methodology.
+The distillation approach used in this repository won on every evaluation
+metric, and was the only one of the six that requires no imagery at
+inference — the property that makes continent-scale deployment practical.
+See the manuscript's Methods and Supplementary Information for the full
+comparison, including each alternative's design and the evaluation
+metrics used.
 
 ## Usage
 
 ```bash
-# M1: PCA baseline
-python methods/m1_raw_features/run.py
-
-# M2: triplet-trained morphology MLP
-python methods/m2_supervised_morphological/train_triplet.py
-python methods/m2_supervised_morphological/extract_triplet.py
-
-# M3: frozen DINOv3
-python methods/m3_frozen_vit/extract.py
-
-# M4: triplet-trained projection head over frozen DINOv3
+# Train and extract the teacher (image-based) embedding
 python methods/m4_finetuned_vit/train_triplet.py
 python methods/m4_finetuned_vit/extract_triplet.py
 
-# M5: self-supervised distillation from M3
-python methods/m5_selfsup_distillation/train.py
-python methods/m5_selfsup_distillation/extract.py
-
-# M6: triplet distillation from M4
+# Train and extract the student (indicator-based) embedding
 python methods/m6_triplet_distillation/train.py
 python methods/m6_triplet_distillation/extract.py
 
-# Reproduce final_ranking.csv from the bundled outputs/
+# Reproduce the design-validation ranking table from the bundled outputs/
 python eval_all_methods.py
 ```
+
+See `methods/` for the remaining alternatives evaluated in design
+validation.
 
 ## Repository layout
 
 ```
-morphology_embedding_comparison/
+africa_morphology_embedding/
 ├── README.md, DATA_PATHS.md, environment.yml, requirements.txt, pyproject.toml
 ├── eval_all_methods.py
-├── methods/                         # one subdirectory per method (M1-M6)
+├── methods/                         # the teacher-student approach and five alternatives
 ├── shared/                          # shared path/dataset utilities
-├── backbone/dinov3/                 # vendored, pruned DINOv3 (weights not bundled)
+├── backbone/dinov3/                 # vendored, pruned vision backbone (weights not bundled)
 ├── data/
-│   ├── annotations/                  # training annotation data
-│   ├── reference/                    # evaluation set + final ranking table
+│   ├── annotations/                  # expert similarity-judgment dataset
+│   ├── reference/                    # evaluation set + design-validation ranking table
 │   ├── features/                     # morphology feature CSVs
 │   └── example/                      # illustrative images
-└── outputs/                          # final checkpoints + embeddings for M1-M6
+└── outputs/                          # final checkpoints + embeddings
 ```
 
 ## Citation
 
-If you use this comparison or the M6 student model, please cite the
-companion morphology-extraction pipeline,
+If you use this embedding model, please also cite the companion
+morphology-extraction pipeline,
 [`africa_morphology_metrics`](https://github.com/Sean-creater/africa_morphology_metrics),
-which produces the feature inputs used throughout.
+which produces the indicator inputs used throughout.
 
 ## License
 

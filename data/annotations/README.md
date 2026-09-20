@@ -1,13 +1,13 @@
 # Annotation Data
 
-Expert pairwise-similarity ratings used to train M2 and M4, and their
-train/validation split.
+Expert pairwise-similarity ratings used to train the teacher model and the
+design-validation alternatives, and their train/validation split.
 
 | File | Description |
 |------|-------------|
 | `pairs_all_rounds.csv` | Consolidated annotation dataset (inter-annotator filtered, averaged) |
 | `pairs_all_rounds_detailed.csv` | Same, with per-expert ratings retained |
-| `train.csv` / `val.csv` | Fixed 90/10 split, used identically by all six methods |
+| `train.csv` / `val.csv` | Fixed 90/10 split, used identically throughout |
 
 ## Format
 
@@ -15,9 +15,9 @@ train/validation split.
 of grid cells, identified by grid ID and image filename. Images are the
 satellite + building/road overlay render produced by the companion
 [`africa_morphology_imagery`](https://github.com/Sean-creater/africa_morphology_imagery)
-repository, the same style used as model input for M3/M4. Rating is the
-mean expert similarity score (1.0 = completely dissimilar, 5.0 = very
-similar).
+repository, the same style used as model input for the teacher model.
+Rating is the mean expert similarity score (1.0 = completely dissimilar,
+5.0 = very similar).
 
 See the manuscript's Methods and Supplementary Information for the
 inter-annotator agreement methodology.
