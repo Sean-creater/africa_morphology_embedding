@@ -1,7 +1,7 @@
 # Morphological Features
 
 Tabular input features for the student model and the indicator-based
-design-validation alternatives.
+ablation alternatives.
 
 | File | Description |
 |------|-------------|

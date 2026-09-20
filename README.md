@@ -4,42 +4,17 @@ Produces a compact, continent-scale embedding of African urban morphology,
 capturing perceptual similarity between neighborhoods, for downstream use
 in constructing a data-driven typology of African urban form.
 
-## Motivation
-
-Two common approaches to representing urban morphology each have
-limitations. Indicator-based approaches (morphology metrics computed
-directly from building footprints and street networks) are interpretable
-and lightweight, but have limited representational capacity and are often
-built around indicators derived from non-African urban contexts. Visual
-embedding approaches (learned directly from imagery) have strong
-representational power and can incorporate visual priors and expert
-judgment, but are difficult to interpret and computationally expensive at
-continental scale.
-
-This repository combines both: a large vision model, guided by expert
-similarity judgments, learns a strong embedding space from urban imagery;
-a lightweight model then reproduces that embedding space from
-interpretable morphology indicators alone. The result keeps the
-representational strength and expert grounding of the image-based
-approach, while remaining interpretable and cheap enough to run across
-every urban grid cell on the continent. The resulting embeddings exhibit
-clear clustering structure and are used downstream to construct an urban
-form typology (a separate, companion analysis).
-
 ## Approach
 
-Urban imagery, guided by expert similarity judgments, trains an embedding
-space (the "teacher" stage) that captures how African urban forms differ
-from one another. A lightweight model then learns to reproduce that
-embedding space from morphology indicators alone (the "student" stage),
-so the final embedding requires no imagery at inference and can be
+A vision model, trained on urban imagery with expert similarity judgments
+as supervision, produces the reference embedding space (the "teacher"
+stage). A lightweight model is then trained to reproduce that embedding
+space from morphology indicators alone (the "student" stage), so the
+published embedding requires only tabular features at inference and can be
 computed for every grid cell on the continent.
 
-To validate this design, six alternative ways of producing the embedding
-were compared against the same held-out expert similarity judgments — see
-[Design validation](#design-validation). The teacher-student approach
-described above performed best on every evaluation metric and is the one
-used to produce the published embeddings.
+This teacher-student design was selected via an ablation comparing six
+approaches to producing the embedding — see [Ablation](#ablation).
 
 ## Installation
 
@@ -79,21 +54,16 @@ See the manuscript's Methods and Supplementary Information for construction
 and validation details. The release is private, visible only to repository
 collaborators.
 
-## Design validation
+## Ablation
 
-Six approaches to producing the embedding were compared, spanning a
-spectrum from unsupervised linear projection to the teacher-student
-approach used in this repository: no learning at all, direct supervised
-learning on morphology indicators, a frozen or fine-tuned vision model on
-imagery, and two knowledge-distillation variants (including the one used
-throughout this repository). All six were evaluated against the same
-held-out expert pairwise-similarity judgments.
-
-The distillation approach used in this repository won on every evaluation
-metric, and was the only one of the six that requires no imagery at
-inference — the property that makes continent-scale deployment practical.
-See the manuscript's Methods and Supplementary Information for the full
-comparison, including each alternative's design and the evaluation
+Six approaches to producing the embedding (`methods/m1`–`m6`) were
+evaluated against the same held-out expert pairwise-similarity judgments:
+PCA on raw indicators, a supervised MLP on indicators, a frozen vision
+backbone, a fine-tuned vision backbone (the teacher stage above), and two
+distillation variants including the teacher-student design used
+throughout this repository. Ranking table: `data/reference/final_ranking.csv`,
+reproduced by `eval_all_methods.py`. See the manuscript's Methods and
+Supplementary Information for each method's design and the evaluation
 metrics used.
 
 ## Usage
@@ -107,12 +77,11 @@ python methods/m4_finetuned_vit/extract_triplet.py
 python methods/m6_triplet_distillation/train.py
 python methods/m6_triplet_distillation/extract.py
 
-# Reproduce the design-validation ranking table from the bundled outputs/
+# Reproduce the ablation ranking table from the bundled outputs/
 python eval_all_methods.py
 ```
 
-See `methods/` for the remaining alternatives evaluated in design
-validation.
+See `methods/` for the remaining alternatives evaluated in the ablation.
 
 ## Repository layout
 
@@ -125,7 +94,7 @@ africa_morphology_embedding/
 ├── backbone/dinov3/                 # vendored, pruned vision backbone (weights not bundled)
 ├── data/
 │   ├── annotations/                  # expert similarity-judgment dataset
-│   ├── reference/                    # evaluation set + design-validation ranking table
+│   ├── reference/                    # evaluation set + ablation ranking table
 │   ├── features/                     # morphology feature CSVs
 │   └── example/                      # illustrative images
 └── outputs/                          # final checkpoints + embeddings

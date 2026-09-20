@@ -1,7 +1,7 @@
 # Annotation Data
 
 Expert pairwise-similarity ratings used to train the teacher model and the
-design-validation alternatives, and their train/validation split.
+ablation alternatives, and their train/validation split.
 
 | File | Description |
 |------|-------------|
