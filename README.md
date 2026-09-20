@@ -49,10 +49,26 @@ repository and is not bundled here; see `DATA_PATHS.md`.
 The morphological indicator table and embeddings for all African grid
 cells are published as release assets:
 [**Continent-scale morphology and embedding data**](https://github.com/Sean-creater/africa_morphology_embedding/releases/tag/africa-full-outputs-v1).
-Both files join on `GridID`, consistent with the companion repositories.
-See the manuscript's Methods and Supplementary Information for construction
-and validation details. The release is private, visible only to repository
-collaborators.
+
+- `africa_morphology_indicators.parquet` — morphological indicator table, one row per grid cell. 47 countries, 7,764 cities, 1,072,849 grid cells.
+- `africa_embeddings.npz` / `.parquet` — learned embedding table, one row per grid cell. 47 countries, 7,764 cities, 1,000,207 grid cells.
+
+Both are joined on `GridID`, consistent with the companion grid and
+morphology-metrics repositories. The embedding table is a subset of the
+indicator table (grid cells with missing morphology indicators are not
+embedded). See the manuscript's Methods and Supplementary Information for
+construction and validation details.
+
+Countries covered: Algeria, Angola, Benin, Botswana, Burkina Faso, Burundi,
+Cameroon, Cape Verde, Central African Republic, Côte dIvoire, Democratic
+Republic of the Congo, Egypt, Equatorial Guinea, Eritrea, Ethiopia, Gabon,
+Gambia, Ghana, Guinea, Guinea-Bissau, Kenya, Lesotho, Liberia, Madagascar,
+Malawi, Mauritania, Mauritius, Mozambique, Namibia, Niger, Nigeria,
+Republic of Congo, Rwanda, Sao Tome and Principe, Senegal, Sierra Leone,
+Somalia, South Africa, South Sudan, Sudan, Swaziland, Tanzania, Togo,
+Tunisia, Uganda, Zambia, Zimbabwe.
+
+The release is private, visible only to repository collaborators.
 
 ## Ablation
 
