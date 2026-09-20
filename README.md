@@ -122,29 +122,14 @@ documented default (see `DATA_PATHS.md`).
 
 ### Full-Africa outputs
 
-You do not need to re-run `extract_full_africa.py` yourself: its output —
-M6 embeddings for all ~1.1M African grid cells, plus the corresponding
-morphological indicator table — is published as release assets on
-[**Full-Africa M6 outputs (1.1M grid cells)**](https://github.com/Sean-creater/morphology_embedding_comparison/releases/tag/africa-full-outputs-v1):
-
-- `africa_morphology_indicators.parquet` — 167-column morphological
-  indicator table, 1,107,028 rows. Population (`Pop2022`) is deliberately
-  excluded from this table, even though it is one of the accepted M1–M6
-  training features (see `data/features/` above): this table is meant as a
-  general downstream-analysis base, and omitting it avoids any impression
-  that population is an independently provided variable for
-  population-related interpretation.
-- `africa_m6_embeddings.npz` / `.parquet` — 256-dim M6 embeddings,
-  1,000,207 rows, produced by the exact `student_fold*.pth` weights checked
-  in under `outputs/m6_triplet_distillation/models/`. The embeddings cover a
-  subset of the morphology table's grid cells (106,821 cells are absent,
-  skipped by the extraction script because at least one required feature
-  was NaN for those cells) — every embedded grid cell is present in the
-  morphology table.
-
-All three files share `GridID` as a join key, consistent with the companion
-`africa_morphology_metrics` and `africa_hex_grid_workflow` repositories.
-The release is private, visible only to repository collaborators.
+`extract_full_africa.py`'s output — the morphological indicator table and
+M6 embeddings for all African grid cells — is published as release assets:
+[**Continent-scale morphology and embedding data**](https://github.com/Sean-creater/morphology_embedding_comparison/releases/tag/africa-full-outputs-v1).
+Both files join on `GridID`, consistent with the companion
+`africa_morphology_metrics` and `africa_hex_grid_workflow` repositories. See
+the manuscript's Methods and Supplementary Information for construction and
+validation details. The release is private, visible only to repository
+collaborators.
 
 ## Methods
 
