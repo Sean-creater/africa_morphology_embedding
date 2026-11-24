@@ -14,8 +14,8 @@ ablation alternatives, and their train/validation split.
 `Image_A_gridID, Image_B_gridID, Image_A, Image_B, Rating` — a rated pair
 of grid cells, identified by grid ID and image filename. Images are the
 satellite + building/road overlay render produced by the companion
-[`africa_morphology_imagery`](https://github.com/Sean-creater/africa_morphology_imagery)
-repository, the same style used as model input for the teacher model.
+`africa_morphology_imagery` repository, the same style used as model
+input for the teacher model.
 Rating is the mean expert similarity score (1.0 = completely dissimilar,
 5.0 = very similar).
 

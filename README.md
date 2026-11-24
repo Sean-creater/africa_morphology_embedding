@@ -36,19 +36,18 @@ ranking table (`data/reference/`), a small illustrative image subset
 pruned copy of the vision backbone (`backbone/dinov3/`; pretrained weights
 are not bundled — see `DATA_PATHS.md`).
 
-Images are produced by the companion
-[`africa_morphology_imagery`](https://github.com/Sean-creater/africa_morphology_imagery)
+Images are produced by the companion `africa_morphology_imagery`
 repository. The full-Africa morphological indicator table used to apply
 the trained model beyond this repository's evaluation set is produced by
-the companion
-[`africa_morphology_metrics`](https://github.com/Sean-creater/africa_morphology_metrics)
-repository and is not bundled here; see `DATA_PATHS.md`.
+the companion `africa_morphology_metrics` repository and is not bundled
+here; see `DATA_PATHS.md`.
 
 ### Full-Africa outputs
 
 The morphological indicator table and embeddings for all African grid
-cells are published as release assets:
-[**Continent-scale morphology and embedding data**](https://github.com/Sean-creater/africa_morphology_embedding/releases/tag/africa-full-outputs-v1).
+cells (**Continent-scale morphology and embedding data**) are published
+as release assets — download them from the companion repository's
+release assets.
 
 - `africa_morphology_indicators.parquet` — morphological indicator table, one row per grid cell.
 - `africa_embeddings.npz` / `.parquet` — learned embedding table, one row per grid cell.
@@ -119,9 +118,8 @@ africa_morphology_embedding/
 ## Citation
 
 If you use this embedding model, please also cite the companion
-morphology-extraction pipeline,
-[`africa_morphology_metrics`](https://github.com/Sean-creater/africa_morphology_metrics),
-which produces the indicator inputs used throughout.
+morphology-extraction pipeline, `africa_morphology_metrics`, which
+produces the indicator inputs used throughout.
 
 ## License
 

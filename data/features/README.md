@@ -12,8 +12,7 @@ ablation alternatives.
 One row per grid cell, identified by `GridID`. Feature columns cover land
 cover, building height and volume, population, street-network topology, and
 building/plot morphology indicators, matching the companion
-[`africa_morphology_metrics`](https://github.com/Sean-creater/africa_morphology_metrics)
-repository's output schema.
+`africa_morphology_metrics` repository's output schema.
 
 Covers 46 African cities across 20+ countries. See the manuscript's Methods
 and Supplementary Information for missing-value handling.

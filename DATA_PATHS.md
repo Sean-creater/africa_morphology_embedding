@@ -3,8 +3,8 @@
 All data required to reproduce the ablation comparison is bundled
 inside this repository, with one external dependency: the full-Africa
 morphological indicator table, produced by the companion
-[`africa_morphology_metrics`](https://github.com/Sean-creater/africa_morphology_metrics)
-repository. It is not bundled here and is only needed to apply the trained
+`africa_morphology_metrics` repository. It is not bundled here and is
+only needed to apply the trained
 embedding model beyond this repository's evaluation set — it is not
 required to reproduce the ablation ranking table. Point the
 `MORPHOLOGY_CLEANED_CSV_ROOT` environment variable at your own checkout of

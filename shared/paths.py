@@ -26,7 +26,7 @@ EVAL_TRIPLETS_CSV = EVAL_DIR / "eval_triplets.csv"   # 546 triplets derived from
 
 OUTPUTS_DIR = ROOT / "outputs"
 
-# Companion repo (Sean-creater/africa_morphology_metrics) output: cleaned,
+# Companion repo (africa_morphology_metrics) output: cleaned,
 # per-city 250m-hex morphology CSVs. Not bundled here (external, large).
 # Default assumes the companion repo is checked out as a sibling directory
 # of this one. Override with MORPHOLOGY_CLEANED_CSV_ROOT if your checkout
