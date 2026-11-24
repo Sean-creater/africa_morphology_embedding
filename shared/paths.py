@@ -28,9 +28,10 @@ OUTPUTS_DIR = ROOT / "outputs"
 
 # Companion repo (Sean-creater/africa_morphology_metrics) output: cleaned,
 # per-city 250m-hex morphology CSVs. Not bundled here (external, large).
-# Override with the MORPHOLOGY_CLEANED_CSV_ROOT environment variable if your
-# checkout lives somewhere other than the documented default sibling layout.
+# Default assumes the companion repo is checked out as a sibling directory
+# of this one. Override with MORPHOLOGY_CLEANED_CSV_ROOT if your checkout
+# lives elsewhere.
 CLEANED_CSV_ROOT = Path(os.environ.get(
     "MORPHOLOGY_CLEANED_CSV_ROOT",
-    "/home/sjs96_file_share/Momepy_workflow/Metrix/data_cleaning_20260224/Cleaned",
+    str(ROOT / "../africa_morphology_metrics/outputs/Cleaned"),
 ))
